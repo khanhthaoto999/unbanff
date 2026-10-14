@@ -3,902 +3,799 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dịch Vụ Mở Khóa Tài Khoản Game Tự Động</title>
+  <title>Hệ Thống Mở Khóa Tài Khoản Game Tự Động 24/7</title>
   
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts & Font Awesome Icons -->
+  <!-- Google Fonts: Be Vietnam Pro & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Canvas Confetti CDN cho hiệu ứng pháo hoa chúc mừng -->
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     body {
-      font-family: 'Rajdhani', sans-serif;
-      background-color: #080808;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: #090d16;
       background-image: 
-        radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 80%, rgba(217, 119, 6, 0.06) 0%, transparent 40%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+        radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+      color: #f1f5f9;
     }
 
-    .font-gaming {
-      font-family: 'Orbitron', sans-serif;
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    .neon-border {
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.25), inset 0 0 10px rgba(245, 158, 11, 0.1);
+    /* Hiệu ứng chữ chạy ngang (Marquee) tốc độ vừa phải 40s */
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
     }
 
-    .neon-border-green {
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), inset 0 0 10px rgba(16, 185, 129, 0.1);
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marqueeScroll 40s linear infinite;
     }
 
-    .neon-text {
-      text-shadow: 0 0 12px rgba(245, 158, 11, 0.7);
+    .marquee-track:hover {
+      animation-play-state: paused;
     }
 
-    .neon-text-green {
-      text-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+    /* Hiệu ứng viền đỏ phát sáng cho khung lưu ý */
+    .red-glow-box {
+      box-shadow: 0 0 25px -5px rgba(239, 68, 68, 0.25), inset 0 0 15px rgba(239, 68, 68, 0.08);
     }
 
-    .active-card {
+    /* Thẻ dịch vụ được chọn */
+    .service-selected {
       border-color: #f59e0b !important;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 15, 15, 0.8)) !important;
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+      background: linear-gradient(145deg, rgba(245, 158, 11, 0.16), rgba(15, 23, 42, 0.9)) !important;
+      box-shadow: 0 0 0 1px #f59e0b, 0 8px 25px -5px rgba(245, 158, 11, 0.25);
     }
 
-    @keyframes pulseGlow {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.6)); }
-      50% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.9)); }
+    .service-selected .check-badge {
+      background-color: #f59e0b !important;
+      color: #000 !important;
+      border-color: #f59e0b !important;
     }
 
-    .glow-pulse {
-      animation: pulseGlow 2.5s infinite ease-in-out;
+    /* Lựa chọn nhánh con (Ngày / Level) */
+    .sub-selected {
+      border-color: #10b981 !important;
+      background-color: rgba(16, 185, 129, 0.15) !important;
+      box-shadow: 0 0 0 1px #10b981;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #111;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #f59e0b;
-      border-radius: 3px;
-    }
+    /* Thanh cuộn gọn */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
   </style>
 </head>
 
-<body class="text-zinc-200 min-h-screen flex flex-col justify-between antialiased selection:bg-amber-500 selection:text-black">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-amber-500 selection:text-black">
 
-  <header class="border-b border-amber-500/20 backdrop-blur-md bg-black/60 sticky top-0 z-40">
-    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-3xl mx-auto px-4 py-3.5 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-black font-extrabold text-xl shadow-lg shadow-amber-500/30">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 text-lg font-black shadow-md shadow-amber-500/20">
           <i class="fa-solid fa-unlock-keyhole"></i>
         </div>
         <div>
-          <h1 class="font-gaming text-lg sm:text-xl font-bold tracking-wider text-amber-400">UNBAN GAME SYSTEM</h1>
-          <p class="text-xs text-zinc-400">Hệ thống mở khóa ID tự động 24/7</p>
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white leading-tight">UNBANFF.SITE</h1>
+          <p class="text-xs text-slate-400">Hệ thống mở khóa tài khoản tự động</p>
         </div>
       </div>
+
       <div class="flex items-center space-x-2">
-        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Server Online
+        <span class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Hoạt động 24/7
         </span>
+        <a href="https://t.me/tttkh1" target="_blank" class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-500 hover:bg-sky-400 text-slate-950 transition shadow-sm">
+          <i class="fa-brands fa-telegram text-sm mr-1.5"></i> HỖ TRỢ
+        </a>
       </div>
     </div>
   </header>
 
-  <main class="max-w-4xl w-full mx-auto px-4 py-8 flex-1">
-    
-    <!-- Tiêu đề & Thông điệp -->
-    <div class="text-center mb-8">
-      <span class="text-amber-500 text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2 inline-block">UY TÍN - TẬN TÂM - TRÁCH NHIỆM</span>
-      <h2 class="text-2xl sm:text-4xl font-extrabold font-gaming tracking-wide text-white">
-        DỊCH VỤ <span class="text-amber-400 neon-text">MỞ KHÓA TÀI KHOẢN</span>
-      </h2>
-      <p class="text-zinc-400 mt-2 text-sm sm:text-base max-w-lg mx-auto">
-        Nhập ID, chọn loại hình cấm bạn gặp phải để nhận báo giá tức thì và quét mã thanh toán tự động duyệt.
-      </p>
+  <!-- MAIN CONTENT -->
+  <main class="max-w-3xl w-full mx-auto px-4 py-6 sm:py-8 flex-1 space-y-6">
+
+    <!-- Thanh trạng thái chữ chạy ngang (Live Feed Marquee) -->
+    <div class="py-2.5 px-3.5 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center space-x-3 shadow-sm overflow-hidden">
+      <div class="flex items-center space-x-1.5 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-lg flex-shrink-0 z-10">
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Live</span>
+      </div>
+
+      <div class="overflow-hidden flex-1 relative">
+        <div id="liveFeedTrack" class="marquee-track text-xs sm:text-sm text-slate-300 font-medium whitespace-nowrap">
+          <!-- Nội dung chữ chạy sẽ được khởi tạo và cập nhật tự động bằng JS -->
+        </div>
+      </div>
     </div>
 
-    <!-- Khung Form thao tác chính -->
-    <div class="bg-zinc-950/90 border border-zinc-800 rounded-2xl p-5 sm:p-8 neon-border relative overflow-hidden backdrop-blur-xl">
-      <div class="absolute -top-10 -right-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Tiêu đề, Slogan & Khung Đỏ Thông Báo Nổi Bật -->
+    <div class="text-center space-y-3">
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 shadow-sm">
+        <i class="fa-solid fa-star text-amber-400 text-[11px]"></i>
+        <span class="text-amber-400 text-xs sm:text-sm font-extrabold tracking-widest uppercase">
+          UY TÍN - TẬN TÂM - TIỆN LỢI
+        </span>
+        <i class="fa-solid fa-star text-amber-400 text-[11px]"></i>
+      </div>
 
-      <!-- BƯỚC 1: NHẬP ID GAME -->
-      <section class="mb-8">
-        <label for="gameIdInput" class="block text-amber-400 font-gaming text-sm uppercase tracking-wider mb-2 flex items-center justify-between">
-          <span><span class="text-white bg-amber-500/20 px-2 py-0.5 rounded mr-1">BƯỚC 1</span> Nhập ID Game</span>
-          <span class="text-xs font-sans text-zinc-400 normal-case">(Chỉ nhập từ 8 đến 12 số)</span>
-        </label>
-        <div class="relative">
-          <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 text-lg">
-            <i class="fa-solid fa-gamepad"></i>
-          </span>
-          <input 
-            type="text" 
-            id="gameIdInput" 
-            maxlength="16"
-            oninput="validateGameIdInput()"
-            placeholder="Vui lòng nhập đúng" 
-            class="w-full pl-11 pr-24 py-3.5 bg-zinc-900 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all font-sans text-base"
-          >
-          <div class="absolute inset-y-0 right-0 flex items-center pr-4">
-            <span id="charCountBadge" class="text-xs font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">0/12</span>
-          </div>
+      <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+        MỞ KHÓA <span class="text-amber-400">TÀI KHOẢN GAME</span>
+      </h2>
+
+      <!-- ========================================================
+           KHUNG ĐỎ LỚN LÀM NỔI BẬT HƯỚNG DẪN & GHI CHÚ CHO KHÁCH
+           (Bạn có thể thoải mái sửa chữ hoặc thêm dòng <li> ở dưới)
+           ======================================================== -->
+      <div class="mt-3 bg-gradient-to-b from-red-950/60 to-slate-950/95 border-2 border-red-500/80 rounded-2xl p-4 sm:p-6 text-left red-glow-box relative overflow-hidden">
+        <!-- Tiêu đề khung đỏ -->
+        <div class="flex items-center space-x-2 text-red-400 font-extrabold text-sm sm:text-base uppercase tracking-wide mb-2">
+          <i class="fa-solid fa-triangle-exclamation text-red-500 text-lg animate-pulse"></i>
+          <span>HƯỚNG DẪN & LƯU Ý QUAN TRỌNG</span>
         </div>
 
-        <!-- Thông báo lỗi khi ID sai quy cách (<8 hoặc >12 số, hoặc ký tự lạ) -->
-        <div id="gameIdErrorBox" class="hidden mt-2 p-3 rounded-lg bg-red-950/40 border border-red-500/50 text-red-300 text-xs flex items-start space-x-2">
-          <i class="fa-solid fa-circle-xmark text-base text-red-400 mt-0.5 flex-shrink-0"></i>
-          <span id="gameIdErrorMsg">ID không hợp lệ. Vui lòng nhập từ 8 đến 12 chữ số!</span>
-        </div>
+        <!-- Nội dung chính được làm to, rõ ràng -->
+        <p class="text-white text-sm sm:text-base font-semibold leading-relaxed">
+          Chọn dịch vụ cần sử dụng sau đó ấn tạo mã QR. Sau khi thanh toán hệ thống sẽ tự động nhận diện và xử lý yêu cầu.
+        </p>
 
-        <!-- Thông báo thành công khi ID hợp lệ (8 - 12 chữ số) -->
-        <div id="gameIdSuccessBox" class="hidden mt-2 p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/50 text-emerald-300 text-xs flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <i class="fa-solid fa-circle-check text-base text-emerald-400 flex-shrink-0"></i>
-            <span id="gameIdSuccessMsg">✓ Đã nhận dữ liệu thành công! ID hợp lệ.</span>
-          </div>
-          <span class="text-[11px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-mono font-bold">READY</span>
-        </div>
-      </section>
+        <!-- Phần Note mở rộng (Bạn có thể sửa hoặc thêm các dòng ghi chú tại đây) -->
+        <ul class="mt-3 pt-3 border-t border-red-500/30 space-y-2 text-xs sm:text-sm text-red-200/90">
+          <li class="flex items-start space-x-2">
+            <i class="fa-solid fa-circle-dot text-red-400 text-[10px] mt-1.5 flex-shrink-0"></i>
+            <span>Trang web đã được viết<strong class="text-amber-400"> ĐƠN GIẢN NHẤT</strong> nếu bạn không hiểu thì đó là<strong class="text-amber-400"> VẤN ĐỀ CỦA BẠN</strong> 👌</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <i class="fa-solid fa-circle-dot text-red-400 text-[10px] mt-1.5 flex-shrink-0"></i>
+            <span>Sau khi thanh toán , ID của bạn sẽ<strong class="text-amber-400"> TỰ ĐỘNG CHẠY</strong> không cần nhắn tin cho ADMIN</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <i class="fa-solid fa-circle-dot text-red-400 text-[10px] mt-1.5 flex-shrink-0"></i>
+            <span>Hệ thống mở ban tự động<strong class="text-amber-400"> KHÔNG NHẬN CARD</strong> vui lòng sử dụng phương thức thanh toán chuyển khoản</span>
+          </li>
+        </ul>
+      </div>
+    </div>
 
-      <!-- BƯỚC 2: CHỌN LOẠI DỊCH VỤ -->
-      <section class="mb-8">
-        <label class="block text-amber-400 font-gaming text-sm uppercase tracking-wider mb-3">
-          <span class="text-white bg-amber-500/20 px-2 py-0.5 rounded mr-1">BƯỚC 2</span> Chọn gói dịch vụ
-        </label>
+    <!-- ==========================================
+         BƯỚC 1: NHẬP ID GAME
+         ========================================== -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 font-extrabold text-sm flex items-center justify-center">1</span>
+          <h3 class="text-base sm:text-lg font-bold text-white">Nhập ID Game cần mở ban</h3>
+        </div>
+        <span class="text-xs text-slate-400 font-medium">Từ 8 đến 12 chữ số</span>
+      </div>
+
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+          <i class="fa-solid fa-gamepad text-lg"></i>
+        </span>
+        <input 
+          type="text" 
+          id="gameIdInput" 
+          inputmode="numeric"
+          maxlength="16"
+          oninput="validateGameIdInput()"
+          placeholder="Nhập chính xác ID Game của bạn..." 
+          class="w-full pl-11 pr-20 py-3.5 bg-slate-950 border-2 border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition font-mono-code text-base sm:text-lg"
+        >
+        <div class="absolute inset-y-0 right-0 flex items-center pr-3.5">
+          <span id="charCountBadge" class="text-xs font-mono-code font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400">0/12</span>
+        </div>
+      </div>
+
+      <!-- Báo lỗi ID -->
+      <div id="gameIdErrorBox" class="hidden mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs sm:text-sm flex items-center space-x-2.5">
+        <i class="fa-solid fa-circle-exclamation text-red-400 text-base flex-shrink-0"></i>
+        <span id="gameIdErrorMsg">ID không hợp lệ. Vui lòng kiểm tra lại!</span>
+      </div>
+
+      <!-- Báo ID hợp lệ -->
+      <div id="gameIdSuccessBox" class="hidden mt-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-circle-check text-emerald-400 text-base flex-shrink-0"></i>
+          <span id="gameIdSuccessMsg">Đã nhận ID hợp lệ! Hãy chọn gói dịch vụ ở Bước 2.</span>
+        </div>
+        <span class="text-[11px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono-code font-bold">HỢP LỆ</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         BƯỚC 2: CHỌN GÓI DỊCH VỤ
+         ========================================== -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 font-extrabold text-sm flex items-center justify-center">2</span>
+          <h3 class="text-base sm:text-lg font-bold text-white">Chọn tình trạng bị ban</h3>
+        </div>
+        <span class="text-xs text-slate-400">Chạm vào gói để chọn</span>
+      </div>
+
+      <!-- 3 Gói chính -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          
-          <!-- Dịch vụ 1: Mở khóa ID -->
-          <button type="button" onclick="selectService('id_lock')" id="btn-service-id_lock" class="service-card text-left p-4 rounded-xl border border-zinc-800 bg-zinc-900/60 hover:border-amber-500/50 hover:bg-zinc-900 transition-all cursor-pointer group">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-amber-400 text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-shield-cat"></i></span>
-              <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">Đồng giá</span>
+        <!-- Gói 1: Mở khóa ID-->
+        <button type="button" onclick="selectService('id_lock')" id="btn-service-id_lock" class="service-card text-left p-4 rounded-xl border-2 border-slate-800 bg-slate-950/70 hover:border-slate-700 transition flex flex-col justify-between cursor-pointer">
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-user-shield"></i>
+              </span>
+              <span class="check-badge w-6 h-6 rounded-full border border-slate-700 bg-slate-900 flex items-center justify-center text-xs text-transparent transition">
+                <i class="fa-solid fa-check"></i>
+              </span>
             </div>
-            <h3 class="font-bold text-white text-base">MỞ KHÓA ID</h3>
-            <p class="text-xs text-zinc-400 mt-1">Dành cho tài khoản bị khóa ID , Khoá tổ đội , không thể ghép đội (hoặc ghép toàn gặp hack)</p>
-            <div class="text-amber-400 font-gaming font-extrabold text-lg mt-3">70.000 VNĐ</div>
-          </button>
+            <h4 class="font-bold text-white text-base">MỞ BAN ID ( BAN TỔ ĐỘI )</h4>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+              Khóa ID, khóa tổ đội, không ghép được trận hoặc ghép toàn gặp hack.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">Đồng giá</span>
+            <span class="text-amber-400 font-extrabold text-base font-mono-code">70.000đ</span>
+          </div>
+        </button>
 
-          <!-- Dịch vụ 2: Mở ban ngày -->
-          <button type="button" onclick="selectService('ban_days')" id="btn-service-ban_days" class="service-card text-left p-4 rounded-xl border border-zinc-800 bg-zinc-900/60 hover:border-amber-500/50 hover:bg-zinc-900 transition-all cursor-pointer group">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-amber-400 text-xl group-hover:scale-110 transition-transform"><i class="fa-regular fa-clock"></i></span>
-              <span class="text-xs bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded-full">Tùy chọn ngày</span>
+        <!-- Gói 2: Mở ban ngày -->
+        <button type="button" onclick="selectService('ban_days')" id="btn-service-ban_days" class="service-card text-left p-4 rounded-xl border-2 border-slate-800 bg-slate-950/70 hover:border-slate-700 transition flex flex-col justify-between cursor-pointer">
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                <i class="fa-regular fa-calendar-check"></i>
+              </span>
+              <span class="check-badge w-6 h-6 rounded-full border border-slate-700 bg-slate-900 flex items-center justify-center text-xs text-transparent transition">
+                <i class="fa-solid fa-check"></i>
+              </span>
             </div>
-            <h3 class="font-bold text-white text-base">MỞ BAN NGÀY</h3>
-            <p class="text-xs text-zinc-400 mt-1">Bị ban ngày do sài hack , bug , mod</p>
-            <div class="text-amber-400 font-gaming font-extrabold text-lg mt-3">Từ 50.000 VNĐ</div>
-          </button>
+            <h4 class="font-bold text-white text-base">MỞ BAN NGÀY</h4>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+              Tài khoản bị khóa có thời hạn (7, 15, 30 ngày) do xài hack, bug, mod.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">Tùy số ngày</span>
+            <span class="text-amber-400 font-extrabold text-base font-mono-code">Từ 50.000đ</span>
+          </div>
+        </button>
 
-          <!-- Dịch vụ 3: Mở ban vĩnh viễn -->
-          <button type="button" onclick="selectService('ban_perm')" id="btn-service-ban_perm" class="service-card text-left p-4 rounded-xl border border-zinc-800 bg-zinc-900/60 hover:border-amber-500/50 hover:bg-zinc-900 transition-all cursor-pointer group">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-amber-400 text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-ban"></i></span>
-              <span class="text-xs bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded-full">Theo Level acc</span>
+        <!-- Gói 3: Mở ban vĩnh viễn -->
+        <button type="button" onclick="selectService('ban_perm')" id="btn-service-ban_perm" class="service-card text-left p-4 rounded-xl border-2 border-slate-800 bg-slate-950/70 hover:border-slate-700 transition flex flex-col justify-between cursor-pointer">
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-ban"></i>
+              </span>
+              <span class="check-badge w-6 h-6 rounded-full border border-slate-700 bg-slate-900 flex items-center justify-center text-xs text-transparent transition">
+                <i class="fa-solid fa-check"></i>
+              </span>
             </div>
-            <h3 class="font-bold text-white text-base">BAN VĨNH VIỄN</h3>
-            <p class="text-xs text-zinc-400 mt-1">Gỡ cấm vĩnh viễn cho tất cả các lí do</p>
-            <div class="text-amber-400 font-gaming font-extrabold text-lg mt-3">Từ 100.000 VNĐ</div>
+            <h4 class="font-bold text-white text-base">MỞ BAN VĨNH VIỄN</h4>
+            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+              Mở ban vĩnh viễn cho tất cả các lý do (Tất cả các dạng đều mở được)
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">Theo Level</span>
+            <span class="text-amber-400 font-extrabold text-base font-mono-code">Từ 100.000đ</span>
+          </div>
+        </button>
+
+      </div>
+
+      <!-- Tùy chọn số ngày ban -->
+      <div id="sub-options-days" class="hidden mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800">
+        <div class="text-xs font-bold text-emerald-400 uppercase mb-2.5 flex items-center">
+          <i class="fa-solid fa-clock-rotate-left mr-1.5"></i> Chọn số ngày tài khoản đang bị khóa:
+        </div>
+        <div class="grid grid-cols-3 gap-2.5">
+          <button type="button" onclick="selectDayOption(7, 50000)" id="btn-day-7" class="day-opt-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-center hover:border-slate-600 transition">
+            <div class="text-sm font-bold text-white">7 Ngày</div>
+            <div class="text-amber-400 font-extrabold font-mono-code text-xs sm:text-sm mt-0.5">50.000đ</div>
           </button>
-
+          <button type="button" onclick="selectDayOption(15, 60000)" id="btn-day-15" class="day-opt-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-center hover:border-slate-600 transition">
+            <div class="text-sm font-bold text-white">15 Ngày</div>
+            <div class="text-amber-400 font-extrabold font-mono-code text-xs sm:text-sm mt-0.5">60.000đ</div>
+          </button>
+          <button type="button" onclick="selectDayOption(30, 80000)" id="btn-day-30" class="day-opt-btn p-3 rounded-xl border border-slate-800 bg-slate-900 text-center hover:border-slate-600 transition">
+            <div class="text-sm font-bold text-white">30 Ngày</div>
+            <div class="text-amber-400 font-extrabold font-mono-code text-xs sm:text-sm mt-0.5">80.000đ</div>
+          </button>
         </div>
+      </div>
 
-        <!-- Nhánh con: Chọn số ngày ban (Nếu chọn Mở ban ngày) -->
-        <div id="sub-options-days" class="hidden mt-4 p-4 rounded-xl bg-zinc-900/90 border border-amber-500/30">
-          <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-2 flex items-center">
-            <i class="fa-solid fa-calendar-days mr-2"></i> Khách chọn thời gian bị ban:
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            <button type="button" onclick="selectDayOption(7, 50000)" id="btn-day-7" class="day-opt-btn p-3 rounded-lg border border-zinc-700 bg-zinc-800/80 text-left hover:border-amber-400 transition-all">
-              <div class="text-sm font-semibold text-white">7 Ngày</div>
-              <div class="text-amber-400 font-bold font-gaming text-sm mt-0.5">50.000 VNĐ</div>
-            </button>
-            <button type="button" onclick="selectDayOption(15, 60000)" id="btn-day-15" class="day-opt-btn p-3 rounded-lg border border-zinc-700 bg-zinc-800/80 text-left hover:border-amber-400 transition-all">
-              <div class="text-sm font-semibold text-white">15 Ngày</div>
-              <div class="text-amber-400 font-bold font-gaming text-sm mt-0.5">60.000 VNĐ</div>
-            </button>
-            <button type="button" onclick="selectDayOption(30, 80000)" id="btn-day-30" class="day-opt-btn p-3 rounded-lg border border-zinc-700 bg-zinc-800/80 text-left hover:border-amber-400 transition-all">
-              <div class="text-sm font-semibold text-white">30 Ngày</div>
-              <div class="text-amber-400 font-bold font-gaming text-sm mt-0.5">80.000 VNĐ</div>
-            </button>
-          </div>
+      <!-- Tùy chọn Level -->
+      <div id="sub-options-level" class="hidden mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800">
+        <div class="text-xs font-bold text-emerald-400 uppercase mb-2.5 flex items-center">
+          <i class="fa-solid fa-ranking-star mr-1.5"></i> Chọn cấp độ (Level) tài khoản của bạn:
         </div>
-
-        <!-- Nhánh con: Chọn Level tài khoản (Nếu chọn Ban Vĩnh Viễn) -->
-        <div id="sub-options-level" class="hidden mt-4 p-4 rounded-xl bg-zinc-900/90 border border-amber-500/30">
-          <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-2 flex items-center">
-            <i class="fa-solid fa-trophy mr-2"></i> Khách chọn Level tài khoản (LV acc):
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <button type="button" onclick="selectLevelOption('under_64', 100000)" id="btn-lvl-under_64" class="lvl-opt-btn p-3.5 rounded-lg border border-zinc-700 bg-zinc-800/80 text-left hover:border-amber-400 transition-all">
-              <div class="text-sm font-semibold text-white">Dưới Level 64 (LV &lt; 65)</div>
-              <div class="text-amber-400 font-bold font-gaming text-base mt-0.5">100.000 VNĐ</div>
-            </button>
-            <button type="button" onclick="selectLevelOption('above_65', 150000)" id="btn-lvl-above_65" class="lvl-opt-btn p-3.5 rounded-lg border border-zinc-700 bg-zinc-800/80 text-left hover:border-amber-400 transition-all">
-              <div class="text-sm font-semibold text-white">Trên Level 65 (LV &ge; 65)</div>
-              <div class="text-amber-400 font-bold font-gaming text-base mt-0.5">150.000 VNĐ</div>
-            </button>
-          </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <button type="button" onclick="selectLevelOption('under_65', 100000)" id="btn-lvl-under_65" class="lvl-opt-btn p-3.5 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-between hover:border-slate-600 transition">
+            <span class="text-sm font-bold text-white">Dưới Level 65 (LV &lt; 65)</span>
+            <span class="text-amber-400 font-extrabold font-mono-code text-sm">100.000đ</span>
+          </button>
+          <button type="button" onclick="selectLevelOption('above_65', 150000)" id="btn-lvl-above_65" class="lvl-opt-btn p-3.5 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-between hover:border-slate-600 transition">
+            <span class="text-sm font-bold text-white">Trên Level 65 (LV &ge; 65)</span>
+            <span class="text-amber-400 font-extrabold font-mono-code text-sm">150.000đ</span>
+          </button>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- BƯỚC 3: AUTO BÁO GIÁ TỨC THÌ -->
-      <section class="bg-black/80 border border-amber-500/40 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+    <!-- ==========================================
+         BƯỚC 3: AUTO BANK QR DUY NHẤT (TẬP TRUNG TỐI ƯU)
+         ========================================== -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4">
+      <div class="flex items-center space-x-2.5">
+        <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 font-extrabold text-sm flex items-center justify-center">3</span>
+        <h3 class="text-base sm:text-lg font-bold text-white">Thanh toán chuyển khoản MB Bank tự động</h3>
+      </div>
+
+      <!-- Tóm tắt chi phí -->
+      <div class="bg-slate-950 border border-amber-500/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <span class="text-xs uppercase tracking-wider text-zinc-400 block mb-0.5 font-gaming">Chi Phí Dịch Vụ Dự Tính</span>
-          <div class="text-sm text-zinc-300" id="serviceDescSummary">Vui lòng chọn dịch vụ ở trên</div>
+          <span class="text-xs text-slate-400 block">Gói dịch vụ đang chọn:</span>
+          <strong id="serviceDescSummary" class="text-sm sm:text-base text-white">Mở Khóa ID (Đồng giá)</strong>
         </div>
-        <div class="text-right flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto">
-          <span class="text-xs text-zinc-500 sm:hidden">Tổng tiền:</span>
-          <div class="text-2xl sm:text-3xl font-gaming font-extrabold text-amber-400 neon-text" id="autoPriceDisplay">
-            0 VNĐ
-          </div>
+        <div class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 border-slate-800 pt-2 sm:pt-0">
+          <span class="text-xs text-slate-400">Số tiền thanh toán:</span>
+          <span id="autoPriceDisplay" class="text-xl sm:text-2xl font-extrabold text-amber-400 font-mono-code">70.000 VNĐ</span>
         </div>
-      </section>
+      </div>
 
-      <!-- Nút tạo đơn & Thanh toán -->
+      <!-- Nút tạo QR -->
       <button 
         type="button" 
         id="btnCreateOrder" 
         onclick="generateOrder()" 
-        class="w-full py-4 px-6 rounded-xl font-gaming font-bold text-base tracking-wider uppercase bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-black hover:opacity-95 transform active:scale-[0.99] transition shadow-lg shadow-amber-500/25 flex items-center justify-center space-x-2"
+        class="w-full py-4 px-6 rounded-xl font-extrabold text-sm sm:text-base uppercase bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 hover:brightness-110 active:scale-[0.99] transition shadow-lg shadow-amber-500/20 flex items-center justify-center space-x-2 cursor-pointer"
       >
-        <i class="fa-solid fa-qrcode"></i>
-        <span>Tạo Đơn & Thanh Toán Ngay</span>
+        <i class="fa-solid fa-qrcode text-lg"></i>
+        <span>Tạo Mã QR VÀ THANH TOÁN</span>
       </button>
 
-    </div>
-
-    <!-- BƯỚC 4: KHUNG THANH TOÁN QR & DUYỆT TỰ ĐỘNG -->
-    <div id="paymentBox" class="hidden mt-8 bg-zinc-950 border-2 border-amber-500/60 rounded-2xl p-6 sm:p-8 neon-border transition-all">
-      <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-6">
-        <div class="flex items-center space-x-2 text-amber-400 font-gaming text-lg">
-          <i class="fa-solid fa-wallet"></i>
-          <span>XÁC NHẬN THANH TOÁN TỰ ĐỘNG</span>
-        </div>
-        <span class="px-2.5 py-1 text-xs rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse font-medium">
-          Chờ giao dịch...
-        </span>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        <!-- Cột 1: Mã QR VietQR -->
-        <div class="flex flex-col items-center justify-center p-4 bg-white rounded-2xl shadow-inner">
-          <div class="w-full max-w-[240px] aspect-square flex items-center justify-center overflow-hidden rounded-xl bg-zinc-100 relative">
-            <img 
-              id="qrCodeImage" 
-              src="" 
-              alt="Mã QR Chuyển Khoản" 
-              class="w-full h-full object-contain"
-              onerror="this.src='https://placehold.co/240x240/111827/f59e0b?text=QR+DANG+TAO+QR'"
-            >
-          </div>
-          <p class="text-zinc-800 text-xs font-semibold mt-2.5 text-center flex items-center">
-            <i class="fa-solid fa-mobile-screen-button mr-1.5 text-amber-600"></i>
-            Quét bằng app ngân hàng bất kỳ để tự điền tiền & nội dung
-          </p>
-        </div>
-
-        <!-- Cột 2: Chi tiết thông tin chuyển khoản & Cú pháp copy -->
-        <div class="space-y-4">
+      <!-- Khung QR hiển thị tự động -->
+      <div id="paymentBox" class="hidden pt-4 border-t border-slate-800 space-y-4">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-6">
           
-          <!-- Ngân hàng & Chủ tài khoản -->
-          <div class="bg-zinc-900/90 p-3.5 rounded-xl border border-zinc-800">
-            <div class="text-xs text-zinc-400">Ngân hàng & Chủ TK:</div>
-            <div class="text-sm font-bold text-white flex items-center justify-between mt-0.5">
-              <span id="bankNameDisplay">MB BANK</span>
-              <span id="accountNameDisplay" class="text-amber-400">NGUYEN VAN A</span>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            <!-- Cột trái: Ảnh QR VietQR -->
+            <div class="flex flex-col items-center">
+              <div class="bg-white p-3 rounded-2xl shadow-md w-full max-w-[220px] aspect-square flex items-center justify-center">
+                <img 
+                  id="qrCodeImage" 
+                  src="" 
+                  alt="Mã QR MB Bank" 
+                  class="w-full h-full object-contain rounded-lg"
+                  onerror="this.src='https://placehold.co/220x220/ffffff/0f172a?text=Đang+Tạo+QR'"
+                >
+              </div>
+              <span class="text-xs text-slate-400 mt-2 text-center">
+                <i class="fa-solid fa-camera mr-1 text-amber-400"></i> Quét mã để tự động điền THÔNG TIN 
+              </span>
+            </div>
+
+            <!-- Cột phải: Thông tin kèm nút Sao chép -->
+            <div class="space-y-2.5 text-xs">
+              <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+                <div>
+                  <span class="text-slate-400 block text-[11px]">Ngân hàng thụ hưởng</span>
+                  <strong class="text-white text-sm">MB BANK</strong>
+                </div>
+                <span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-1 rounded">THAO TO KHANH</span>
+              </div>
+
+              <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+                <div>
+                  <span class="text-slate-400 block text-[11px]">Số tài khoản</span>
+                  <strong id="accountNumberDisplay" class="text-base font-mono-code text-white">31120069999</strong>
+                </div>
+                <button type="button" onclick="copyToClipboard('accountNumberDisplay', 'Đã sao chép số tài khoản!')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-400 font-bold transition">Sao chép</button>
+              </div>
+
+              <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+                <div>
+                  <span class="text-slate-400 block text-[11px]">Số tiền cần chuyển</span>
+                  <strong id="payAmountDisplay" class="text-base font-mono-code text-emerald-400">70.000 VNĐ</strong>
+                  <input type="hidden" id="rawAmount" value="70000">
+                </div>
+                <button type="button" onclick="copyToClipboard('rawAmount', 'Đã sao chép số tiền!')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-400 font-bold transition">Sao chép</button>
+              </div>
+
+              <div class="p-3 bg-amber-500/10 rounded-xl border-2 border-amber-500/50 flex justify-between items-center">
+                <div>
+                  <span class="text-amber-300 font-bold block text-[11px] uppercase">Nội dung chuyển khoản (Bắt buộc)</span>
+                  <strong id="transferContentDisplay" class="text-lg font-mono-code text-amber-400">ID 12345678</strong>
+                </div>
+                <button type="button" onclick="copyToClipboard('transferContentDisplay', 'Đã sao chép nội dung chuyển khoản!')" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold transition">Sao chép</button>
+              </div>
             </div>
           </div>
 
-          <!-- Số tài khoản kèm nút Copy -->
-          <div class="bg-zinc-900/90 p-3.5 rounded-xl border border-zinc-800">
-            <div class="text-xs text-zinc-400">Số tài khoản:</div>
-            <div class="flex items-center justify-between mt-0.5">
-              <span id="accountNumberDisplay" class="font-gaming font-bold text-lg text-white">0987654321</span>
-              <button onclick="copyToClipboard('accountNumberDisplay', 'Đã chép số tài khoản!')" class="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black font-semibold px-2.5 py-1.5 rounded-lg transition-all flex items-center">
-                <i class="fa-regular fa-copy mr-1"></i> Sao chép
-              </button>
-            </div>
-          </div>
-
-          <!-- Số tiền chính xác -->
-          <div class="bg-zinc-900/90 p-3.5 rounded-xl border border-zinc-800">
-            <div class="text-xs text-zinc-400">Số tiền cần chuyển:</div>
-            <div class="flex items-center justify-between mt-0.5">
-              <span id="payAmountDisplay" class="font-gaming font-extrabold text-xl text-amber-400">70.000 VNĐ</span>
-              <button onclick="copyToClipboard('rawAmount', 'Đã chép số tiền!')" class="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black font-semibold px-2.5 py-1.5 rounded-lg transition-all flex items-center">
-                <i class="fa-regular fa-copy mr-1"></i> Sao chép
-              </button>
-              <input type="hidden" id="rawAmount" value="70000">
-            </div>
-          </div>
-
-          <!-- CÚ PHÁP CHUYỂN KHOẢN (ID GAME ĐỂ DUYỆT TỰ ĐỘNG) -->
-          <div class="bg-amber-500/10 p-3.5 rounded-xl border-2 border-amber-500/60">
-            <div class="flex items-center justify-between text-xs text-amber-300 font-semibold mb-1">
-              <span>NỘI DUNG CHUYỂN KHOẢN:</span>
-              <span class="text-[10px] bg-amber-500 text-black px-1.5 py-0.5 rounded font-bold uppercase">Bắt buộc đúng</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span id="transferContentDisplay" class="font-gaming font-extrabold text-lg sm:text-xl text-amber-400 tracking-wider">ID 123456</span>
-              <button onclick="copyToClipboard('transferContentDisplay', 'Đã chép nội dung chuyển khoản!')" class="text-xs bg-amber-500 text-black font-bold px-3 py-1.5 rounded-lg hover:bg-amber-400 transition-all flex items-center shadow">
-                <i class="fa-regular fa-copy mr-1"></i> Sao chép
-              </button>
-            </div>
-          </div>
-
-          <div class="p-3 bg-red-950/40 border border-red-500/30 rounded-xl text-xs text-zinc-300 space-y-1">
-            <div class="text-amber-400 font-bold flex items-center">
-              <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> LƯU Ý QUAN TRỌNG:
-            </div>
-            <p>Hệ thống tự động duyệt qua cú pháp <strong class="text-white">ID GAME</strong>. Không thêm ký tự thừa để tránh chậm trễ kích hoạt.</p>
+          <!-- Nút xác nhận chuyển tiền kèm khóa chống spam -->
+          <div class="mt-5 pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-slate-400 text-center sm:text-left">
+              <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Sau khi chuyển tiền qua App, bấm xác nhận bên dưới:
+            </p>
+            <button 
+              type="button" 
+              id="btnConfirmPay"
+              onclick="openPaymentSuccessModal()" 
+              class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition shadow-lg flex items-center justify-center space-x-2 cursor-pointer"
+            >
+              <i class="fa-solid fa-circle-check text-base"></i>
+              <span>Tôi Đã Chuyển Khoản</span>
+            </button>
           </div>
 
         </div>
       </div>
-
-      <!-- Nút hoàn tất kiểm tra trạng thái -->
-      <div class="mt-6 pt-6 border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="text-xs text-zinc-400 flex items-center">
-          <i class="fa-solid fa-shield-halved text-emerald-400 mr-2 text-base"></i>
-          Cam kết bảo mật 100% ID và tài khoản game của khách hàng.
-        </div>
-        <button onclick="openPaymentSuccessModal()" class="w-full sm:w-auto px-7 py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-gaming text-sm font-bold tracking-wider rounded-xl border border-emerald-400/40 shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center space-x-2 cursor-pointer">
-          <i class="fa-solid fa-shield-check text-base"></i>
-          <span>Xác Nhận Đã Chuyển Tiền</span>
-        </button>
-      </div>
-
-    </div>
-
-    <!-- MODAL POPUP THÔNG BÁO XÁC NHẬN CHUYỂN TIỀN CỰC LỚN & HOÀNH TRÁNG -->
-    <div id="paymentModalOverlay" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-300">
-      <div id="paymentModalContent" class="bg-gradient-to-b from-zinc-900 via-zinc-950 to-black border-2 border-amber-500/80 rounded-3xl p-6 sm:p-10 max-w-2xl w-full shadow-2xl shadow-amber-500/20 transform scale-90 opacity-0 transition-all duration-300 relative overflow-hidden neon-border">
-        
-        <!-- Hiệu ứng vệt sáng Radar & tia góc -->
-        <div class="absolute -top-20 -right-20 w-48 h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <!-- Nút đóng góc phải -->
-        <button onclick="closePaymentModal()" class="absolute top-5 right-5 text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 w-9 h-9 rounded-full flex items-center justify-center transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-
-        <!-- Icon lớn & Tiêu đề -->
-        <div class="text-center mb-6">
-          <div class="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 to-emerald-400 p-1 mb-4 glow-pulse">
-            <div class="w-full h-full bg-zinc-950 rounded-full flex items-center justify-center text-emerald-400 text-3xl sm:text-4xl shadow-inner">
-              <i class="fa-solid fa-satellite-dish animate-pulse"></i>
-            </div>
-          </div>
-          <span class="text-emerald-400 text-xs sm:text-sm font-semibold tracking-widest uppercase block mb-1">
-            <i class="fa-solid fa-bolt mr-1"></i> GIAO DỊCH ĐANG ĐƯỢC XỬ LÝ
-          </span>
-          <h3 class="font-gaming text-2xl sm:text-3xl font-black text-white tracking-wide">
-            ĐÃ GỬI LỆNH MỞ KHÓA THÀNH CÔNG!
-          </h3>
-          <p class="text-zinc-400 text-xs sm:text-sm mt-1 max-w-md mx-auto">
-            Hệ thống AI Bot đang đối soát tự động sao kê ngân hàng MB Bank để kích hoạt lệnh gỡ khóa ID.
-          </p>
-        </div>
-
-        <!-- Bảng chi tiết đơn hàng siêu rõ ràng -->
-        <div class="bg-zinc-900/90 rounded-2xl border border-zinc-800 p-4 sm:p-5 mb-5 space-y-3 font-sans">
-          <div class="flex items-center justify-between pb-2.5 border-b border-zinc-800 text-sm">
-            <span class="text-zinc-400">ID Game mở khóa:</span>
-            <span id="modalGameId" class="font-gaming font-bold text-amber-400 text-base">---</span>
-          </div>
-          <div class="flex items-center justify-between pb-2.5 border-b border-zinc-800 text-sm">
-            <span class="text-zinc-400">Gói dịch vụ đã chọn:</span>
-            <span id="modalServiceDesc" class="font-semibold text-white text-right">---</span>
-          </div>
-          <div class="flex items-center justify-between pb-2.5 border-b border-zinc-800 text-sm">
-            <span class="text-zinc-400">Số tiền thanh toán:</span>
-            <span id="modalAmount" class="font-gaming font-extrabold text-emerald-400 text-lg">---</span>
-          </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-zinc-400">Cú pháp nội dung:</span>
-            <span id="modalTransferSyntax" class="font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">---</span>
-          </div>
-        </div>
-
-        <!-- Thanh đếm ngược tiến trình tự động quét (180 giây) -->
-        <div class="bg-black/60 rounded-xl p-4 border border-zinc-800 mb-6">
-          <div class="flex items-center justify-between mb-2 text-xs">
-            <span class="text-zinc-300 font-semibold flex items-center">
-              <span class="w-2 h-2 rounded-full bg-amber-400 mr-2 animate-ping"></span>
-              Đang chờ Bot quét giao dịch...
-            </span>
-            <span id="modalCountdownText" class="font-gaming text-amber-400 font-bold">03:00</span>
-          </div>
-          <div class="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-            <div id="modalProgressBar" class="bg-gradient-to-r from-amber-500 via-emerald-400 to-amber-400 h-full w-full transition-all duration-1000 ease-linear rounded-full"></div>
-          </div>
-          <p class="text-[11px] text-zinc-500 mt-2 text-center">
-            Sau khi nhận được tiền với nội dung khớp đúng <strong class="text-zinc-300">ID GAME</strong>, hệ thống sẽ mở khóa ngay trong 1-3 phút.
-          </p>
-        </div>
-
-        <!-- Nút hành động -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button onclick="closePaymentModal()" class="w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl font-gaming text-xs sm:text-sm font-bold uppercase transition">
-            <i class="fa-solid fa-arrow-left mr-1.5"></i> Quay Lại Kiểm Tra Mã QR
-          </button>
-          <button onclick="reCheckStatus()" class="w-full py-3 px-4 bg-gradient-to-r from-amber-500 to-amber-400 hover:opacity-95 text-black rounded-xl font-gaming text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-1.5">
-            <i class="fa-solid fa-rotate mr-1"></i>
-            <span>Làm Mới Trạng Thái</span>
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- HỘP THÔNG BÁO TÙY BIẾN THAY CHO ALERT BỊ CẤM -->
-    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-      <div class="bg-zinc-900 border border-amber-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
-        <i class="fa-solid fa-circle-check text-amber-400 text-lg" id="toastIcon"></i>
-        <span id="toastMessage" class="text-sm font-medium">Nội dung thông báo</span>
-      </div>
-    </div>
+    </section>
 
   </main>
 
-  <footer class="border-t border-zinc-900 py-6 text-center text-xs text-zinc-500">
-    <p>© @khanh.prf 2026• Hệ thống tự động mở ban bằng ID Game</p>
+  <!-- MODAL XÁC NHẬN ĐƠN HÀNG & ĐẾM NGƯỢC -->
+  <div id="paymentModalOverlay" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div id="paymentModalContent" class="bg-slate-900 border-2 border-amber-500/70 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center space-y-4 shadow-2xl relative">
+      
+      <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-16 h-16 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-3xl flex items-center justify-center mx-auto mb-2">
+        <i class="fa-solid fa-satellite-dish animate-pulse"></i>
+      </div>
+      <h3 class="text-xl sm:text-2xl font-black text-white">ĐÃ GỬI LỆNH MỞ KHÓA!</h3>
+      <p class="text-slate-400 text-xs">Hệ thống đang đối soát tự động sao kê ngân hàng MB Bank.</p>
+
+      <div class="bg-slate-950 rounded-2xl border border-slate-800 p-4 space-y-2 text-xs sm:text-sm text-left">
+        <div class="flex justify-between py-1 border-b border-slate-800">
+          <span class="text-slate-400">ID Game:</span>
+          <strong id="modalGameId" class="font-mono-code text-amber-400">---</strong>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-800">
+          <span class="text-slate-400">Gói dịch vụ:</span>
+          <strong id="modalServiceDesc" class="text-white text-right">---</strong>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-800">
+          <span class="text-slate-400">Số tiền:</span>
+          <strong id="modalAmount" class="font-mono-code text-emerald-400">---</strong>
+        </div>
+        <div class="flex justify-between py-1">
+          <span class="text-slate-400">Nội dung đối soát:</span>
+          <span id="modalTransferSyntax" class="font-mono-code font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded">---</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-950 rounded-xl p-3 border border-slate-800 flex items-center justify-between text-xs">
+        <span class="text-slate-300 flex items-center">
+          <span class="w-2 h-2 rounded-full bg-amber-400 mr-2 animate-ping"></span> Thời gian chờ quét:
+        </span>
+        <strong id="modalCountdownText" class="font-mono-code text-amber-400 text-sm">03:00</strong>
+      </div>
+
+      <button type="button" onclick="closePaymentModal()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold uppercase transition">
+        Đóng Cửa Sổ
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST THÔNG BÁO -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-[9999] transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 border-2 border-amber-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+      <i class="fa-solid fa-circle-check text-amber-400 text-lg" id="toastIcon"></i>
+      <span id="toastMessage" class="text-xs sm:text-sm font-semibold">Thông báo</span>
+    </div>
+  </div>
+
+  <!-- NÚT TELEGRAM NỔI -->
+  <a href="https://t.me/tttkh1" target="_blank" class="fixed bottom-5 left-5 z-30 flex items-center space-x-2 px-4 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold rounded-full shadow-lg transition">
+    <i class="fa-brands fa-telegram text-xl"></i>
+    <span class="text-xs">Hỗ trợ 24/7</span>
+  </a>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500 mt-8">
+    <p>© @khanh.prf 2026 • Hệ thống mở khóa tài khoản Game tự động 24/7</p>
   </footer>
 
+  <!-- ==========================================
+       JAVASCRIPT XỬ LÝ LOGIC BANK & CHỐNG SPAM
+       ========================================== -->
   <script>
-    /* ========================================================
-       CẤU HÌNH THÔNG TIN TÀI KHOẢN NGÂN HÀNG CỦA BẠN TẠI ĐÂY
-       ======================================================== */
     const BANK_CONFIG = {
-      bankCode: "MB",               // MB Bank
-      accountNumber: "31120069999",   // Số tài khoản nhận tiền
-      accountName: "THAO TO KHANH",   // Tên chủ sở hữu tài khoản
+      bankCode: "MB",
+      accountNumber: "31120069999",
+      accountName: "THAO TO KHANH"
     };
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPR0Qz3f4v3QJP2eKoBJBWSawu6qGWXKuX5YQXJzS0wM6hcwZkBK3dVcR67JtIoZfU/exec";
 
-    // State ứng dụng
-    let selectedService = null;       // 'id_lock' | 'ban_days' | 'ban_perm'
-    let selectedSubOption = null;     // '7' | '15' | '30' HOẶC 'under_64' | 'above_65'
-    let currentPrice = 0;             // Giá tiền hiện tại (VNĐ)
-    let currentDescription = "";      // Tên gói chi tiết
-    let isIdValid = false;            // Trạng thái hợp lệ của ID Game (8 - 12 số)
-    let countdownInterval = null;     // Bộ đếm thời gian cho Modal
+    let selectedService = 'id_lock';
+    let selectedSubOption = null;
+    let currentPrice = 70000;
+    let currentDescription = "Mở Khóa ID (Đồng giá)";
+    let isIdValid = false;
+    let countdownInterval = null;
+    let qrCooldownTimer = null;
 
-    // Khởi tạo hiển thị ngân hàng khi tải trang
+    // Tạo nội dung dòng chữ chạy thông báo mở khóa thành công với mốc thời gian thực tế
+    function buildMarqueeItems() {
+      const pkgs = ["Mở Khóa ID", "Mở Ban 7 Ngày", "Mở Ban 15 Ngày", "Mở Ban 30 Ngày", "Mở Ban Vĩnh Viễn"];
+      const times = ["7 phút trước", "9 phút trước", "36 phút trước", "1 giờ trước", "2 giờ trước"];
+      let itemsHtml = "";
+
+      for (let i = 0; i < 5; i++) {
+        const rId = Math.floor(1000 + Math.random() * 9000) + "***" + Math.floor(10 + Math.random() * 89);
+        const pkg = pkgs[Math.floor(Math.random() * pkgs.length)];
+        const time = times[i % times.length];
+        itemsHtml += `<span class="mx-6 inline-flex items-center"><i class="fa-solid fa-circle-check text-emerald-400 mr-1.5 text-xs"></i>ID <strong class="text-emerald-400 font-mono-code mx-1">${rId}</strong> vừa ${pkg} thành công <span class="text-slate-400 ml-1">(${time})</span></span><span class="text-slate-700">•</span>`;
+      }
+
+      // Nhân đôi chuỗi để hiệu ứng chữ chạy nối đuôi liên tục không bị khựng
+      const track = document.getElementById('liveFeedTrack');
+      if (track) {
+        track.innerHTML = `<div class="flex items-center">${itemsHtml}</div><div class="flex items-center">${itemsHtml}</div>`;
+      }
+    }
+
     window.onload = function() {
-      document.getElementById('bankNameDisplay').innerText = BANK_CONFIG.bankCode + " BANK";
-      document.getElementById('accountNameDisplay').innerText = BANK_CONFIG.accountName;
-      document.getElementById('accountNumberDisplay').innerText = BANK_CONFIG.accountNumber;
+      selectService('id_lock');
+      buildMarqueeItems();
+      // Làm mới danh sách ID chạy ngang mỗi 40 giây khớp với chu kỳ chạy
+      setInterval(buildMarqueeItems, 40000);
     };
 
-    // Hàm kiểm tra ID Game thời gian thực: chỉ là số, độ dài 8 -> 12 ký tự
+    // Kiểm tra ID
     function validateGameIdInput() {
       const input = document.getElementById('gameIdInput');
-      const errorBox = document.getElementById('gameIdErrorBox');
-      const errorMsg = document.getElementById('gameIdErrorMsg');
-      const successBox = document.getElementById('gameIdSuccessBox');
-      const successMsg = document.getElementById('gameIdSuccessMsg');
-      const charBadge = document.getElementById('charCountBadge');
-      
       const val = input.value.trim();
-      charBadge.innerText = `${val.length}/12`;
+      document.getElementById('charCountBadge').innerText = `${val.length}/12`;
 
-      // Nếu ô nhập trống
       if (val.length === 0) {
-        input.classList.remove('border-red-500', 'border-emerald-500', 'focus:border-red-500', 'focus:border-emerald-500');
-        input.classList.add('border-zinc-700');
-        errorBox.classList.add('hidden');
-        successBox.classList.add('hidden');
-        charBadge.className = "text-xs font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400";
+        input.className = "w-full pl-11 pr-20 py-3.5 bg-slate-950 border-2 border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition font-mono-code text-base sm:text-lg";
+        document.getElementById('gameIdErrorBox').classList.add('hidden');
+        document.getElementById('gameIdSuccessBox').classList.add('hidden');
+        document.getElementById('charCountBadge').className = "text-xs font-mono-code font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400";
         isIdValid = false;
         return false;
       }
 
-      // Kiểm tra có phải thuần chữ số không
-      const isOnlyDigits = /^[0-9]+$/.test(val);
-
-      if (!isOnlyDigits) {
-        // Có chứa chữ cái hoặc ký tự đặc biệt
-        input.classList.remove('border-zinc-700', 'border-emerald-500', 'focus:border-emerald-500');
-        input.classList.add('border-red-500', 'focus:border-red-500');
-        errorMsg.innerText = "Lỗi: ID Game chỉ được chứa các chữ số (0-9), không chứa chữ cái hoặc ký tự đặc biệt!";
-        errorBox.classList.remove('hidden');
-        successBox.classList.add('hidden');
-        charBadge.className = "text-xs font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-500/40";
+      if (!/^[0-9]+$/.test(val)) {
+        input.className = "w-full pl-11 pr-20 py-3.5 bg-slate-950 border-2 border-red-500 rounded-xl text-white focus:outline-none transition font-mono-code text-base sm:text-lg";
+        document.getElementById('gameIdErrorMsg').innerText = "ID Game chỉ được chứa các chữ số (0-9), không nhập chữ hay ký tự lạ!";
+        document.getElementById('gameIdErrorBox').classList.remove('hidden');
+        document.getElementById('gameIdSuccessBox').classList.add('hidden');
+        document.getElementById('charCountBadge').className = "text-xs font-mono-code font-bold px-2.5 py-1 rounded-lg bg-red-500/20 text-red-400";
         isIdValid = false;
         return false;
       }
 
-      // Kiểm tra số lượng ký tự: từ 8 đến 12 số
-      if (val.length < 8) {
-        input.classList.remove('border-zinc-700', 'border-emerald-500', 'focus:border-emerald-500');
-        input.classList.add('border-red-500', 'focus:border-red-500');
-        errorMsg.innerText = `Lỗi: ID quá ngắn (${val.length} số). Yêu cầu tối thiểu từ 8 số trở lên!`;
-        errorBox.classList.remove('hidden');
-        successBox.classList.add('hidden');
-        charBadge.className = "text-xs font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-500/40";
+      if (val.length < 8 || val.length > 12) {
+        input.className = "w-full pl-11 pr-20 py-3.5 bg-slate-950 border-2 border-red-500 rounded-xl text-white focus:outline-none transition font-mono-code text-base sm:text-lg";
+        document.getElementById('gameIdErrorMsg').innerText = val.length < 8 ? `ID quá ngắn (${val.length} số, cần từ 8-12 số)!` : `ID quá dài (${val.length} số, tối đa 12 số)!`;
+        document.getElementById('gameIdErrorBox').classList.remove('hidden');
+        document.getElementById('gameIdSuccessBox').classList.add('hidden');
+        document.getElementById('charCountBadge').className = "text-xs font-mono-code font-bold px-2.5 py-1 rounded-lg bg-red-500/20 text-red-400";
         isIdValid = false;
         return false;
-      } else if (val.length > 12) {
-        input.classList.remove('border-zinc-700', 'border-emerald-500', 'focus:border-emerald-500');
-        input.classList.add('border-red-500', 'focus:border-red-500');
-        errorMsg.innerText = `Lỗi: ID quá dài (${val.length} số). Yêu cầu tối đa 12 số!`;
-        errorBox.classList.remove('hidden');
-        successBox.classList.add('hidden');
-        charBadge.className = "text-xs font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-500/40";
-        isIdValid = false;
-        return false;
-      } else {
-        // HỢP LỆ: Từ 8 đến 12 chữ số
-        input.classList.remove('border-zinc-700', 'border-red-500', 'focus:border-red-500');
-        input.classList.add('border-emerald-500', 'focus:border-emerald-500');
-        errorBox.classList.add('hidden');
-        successMsg.innerHTML = `✓ <strong>Đã nhận dữ liệu thành công!</strong> ID hợp lệ (${val.length} chữ số).`;
-        successBox.classList.remove('hidden');
-        charBadge.className = "text-xs font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/40";
-        isIdValid = true;
-        return true;
       }
+
+      input.className = "w-full pl-11 pr-20 py-3.5 bg-slate-950 border-2 border-emerald-500 rounded-xl text-white focus:outline-none transition font-mono-code text-base sm:text-lg";
+      document.getElementById('gameIdErrorBox').classList.add('hidden');
+      document.getElementById('gameIdSuccessMsg').innerHTML = `Đã nhận ID <strong>${val}</strong> (${val.length} chữ số).`;
+      document.getElementById('gameIdSuccessBox').classList.remove('hidden');
+      document.getElementById('charCountBadge').className = "text-xs font-mono-code font-bold px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400";
+      isIdValid = true;
+
+      if (!document.getElementById('paymentBox').classList.contains('hidden')) {
+        updateQrBoxData(val);
+      }
+      return true;
     }
 
-    // Hàm thông báo Toast dạng popup
-    function showToast(message, isError = false) {
-      const toast = document.getElementById('toastNotification');
-      const toastMsg = document.getElementById('toastMessage');
-      const toastIcon = document.getElementById('toastIcon');
-
-      toastMsg.innerText = message;
-      if (isError) {
-        toastIcon.className = "fa-solid fa-triangle-exclamation text-red-400 text-lg";
-        toast.firstElementChild.className = "bg-zinc-900 border border-red-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3";
-      } else {
-        toastIcon.className = "fa-solid fa-circle-check text-amber-400 text-lg";
-        toast.firstElementChild.className = "bg-zinc-900 border border-amber-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3";
-      }
-
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0');
-      }, 3000);
-    }
-
-    // Chọn dịch vụ chính (Bước 2)
-    function selectService(serviceType) {
-      selectedService = serviceType;
+    // Chọn gói
+    function selectService(t) {
+      selectedService = t;
       selectedSubOption = null;
 
-      document.querySelectorAll('.service-card').forEach(btn => btn.classList.remove('active-card'));
-      const activeBtn = document.getElementById(`btn-service-${serviceType}`);
-      if (activeBtn) activeBtn.classList.add('active-card');
+      document.querySelectorAll('.service-card').forEach(b => b.classList.remove('service-selected'));
+      const btn = document.getElementById(`btn-service-${t}`);
+      if (btn) btn.classList.add('service-selected');
 
       document.getElementById('sub-options-days').classList.add('hidden');
       document.getElementById('sub-options-level').classList.add('hidden');
 
-      if (serviceType === 'id_lock') {
+      if (t === 'id_lock') {
         currentPrice = 70000;
         currentDescription = "Mở Khóa ID (Đồng giá)";
         updatePriceDisplay();
-      } 
-      else if (serviceType === 'ban_days') {
+      } else if (t === 'ban_days') {
         document.getElementById('sub-options-days').classList.remove('hidden');
         selectDayOption(7, 50000);
-      } 
-      else if (serviceType === 'ban_perm') {
+      } else if (t === 'ban_perm') {
         document.getElementById('sub-options-level').classList.remove('hidden');
-        selectLevelOption('under_64', 100000);
+        selectLevelOption('under_65', 100000);
       }
     }
 
-    // Nhánh: Chọn ngày ban (50k, 60k, 80k)
-    function selectDayOption(days, price) {
-      selectedSubOption = days;
-      currentPrice = price;
-      currentDescription = `Mở Khóa Ban Ngày (${days} ngày)`;
-
-      document.querySelectorAll('.day-opt-btn').forEach(b => b.classList.remove('active-card'));
-      const chosen = document.getElementById(`btn-day-${days}`);
-      if (chosen) chosen.classList.add('active-card');
-
+    function selectDayOption(d, p) {
+      selectedSubOption = d;
+      currentPrice = p;
+      currentDescription = `Mở Khóa Ban Ngày (${d} ngày)`;
+      document.querySelectorAll('.day-opt-btn').forEach(b => b.classList.remove('sub-selected'));
+      document.getElementById(`btn-day-${d}`).classList.add('sub-selected');
       updatePriceDisplay();
     }
 
-    // Nhánh: Chọn Level tài khoản (100k, 150k)
-    function selectLevelOption(levelType, price) {
-      selectedSubOption = levelType;
-      currentPrice = price;
-      currentDescription = levelType === 'under_64' 
-        ? "Mở Ban Vĩnh Viễn (Dưới LV 64)" 
-        : "Mở Ban Vĩnh Viễn (Trên LV 65)";
-
-      document.querySelectorAll('.lvl-opt-btn').forEach(b => b.classList.remove('active-card'));
-      const chosen = document.getElementById(`btn-lvl-${levelType}`);
-      if (chosen) chosen.classList.add('active-card');
-
+    function selectLevelOption(l, p) {
+      selectedSubOption = l;
+      currentPrice = p;
+      currentDescription = l === 'under_65' ? "Mở Ban Vĩnh Viễn (Dưới LV 65)" : "Mở Ban Vĩnh Viễn (Trên LV 65)";
+      document.querySelectorAll('.lvl-opt-btn').forEach(b => b.classList.remove('sub-selected'));
+      document.getElementById(`btn-lvl-${l}`).classList.add('sub-selected');
       updatePriceDisplay();
     }
 
-    // BƯỚC 3: Cập nhật giao diện tự động báo giá
     function updatePriceDisplay() {
-      const priceText = currentPrice.toLocaleString('vi-VN') + " VNĐ";
-      document.getElementById('autoPriceDisplay').innerText = priceText;
+      document.getElementById('autoPriceDisplay').innerText = currentPrice.toLocaleString('vi-VN') + " VNĐ";
       document.getElementById('serviceDescSummary').innerText = currentDescription;
+      if (!document.getElementById('paymentBox').classList.contains('hidden') && isIdValid) {
+        updateQrBoxData(document.getElementById('gameIdInput').value.trim());
+      }
     }
 
-    // BƯỚC 4: Tạo đơn & Tạo mã thanh toán tự động VietQR
-    function generateOrder() {
-      const isValid = validateGameIdInput();
-      const gameId = document.getElementById('gameIdInput').value.trim();
-
-      if (!gameId) {
-        showToast("Vui lòng điền ID Game từ 8 đến 12 chữ số!", true);
-        document.getElementById('gameIdInput').focus();
-        return;
-      }
-
-      if (!isValid) {
-        showToast("ID Game không hợp lệ (Phải từ 8 đến 12 số)!", true);
-        document.getElementById('gameIdInput').focus();
-        return;
-      }
-
-      if (!selectedService || currentPrice === 0) {
-        showToast("Vui lòng chọn một gói dịch vụ!", true);
-        return;
-      }
-
-      const transferContent = `ID ${gameId}`;
-
-      // Cập nhật thông tin lên khung thanh toán
+    // Cập nhật thông tin mã QR
+    function updateQrBoxData(id) {
+      const tc = `ID ${id}`;
       document.getElementById('payAmountDisplay').innerText = currentPrice.toLocaleString('vi-VN') + " VNĐ";
       document.getElementById('rawAmount').value = currentPrice;
-      document.getElementById('transferContentDisplay').innerText = transferContent;
-
-      // Sinh URL mã QR động
-      const qrApiUrl = `https://img.vietqr.io/image/${BANK_CONFIG.bankCode}-${BANK_CONFIG.accountNumber}-compact2.png?amount=${currentPrice}&addInfo=${encodeURIComponent(transferContent)}&accountName=${encodeURIComponent(BANK_CONFIG.accountName)}`;
-
-      document.getElementById('qrCodeImage').src = qrApiUrl;
-
-      // Hiển thị khung thanh toán
-      const paymentBox = document.getElementById('paymentBox');
-      paymentBox.classList.remove('hidden');
-      paymentBox.scrollIntoView({ behavior: 'smooth' });
-
-      showToast("Tạo mã QR thành công! Vui lòng quét mã để chuyển khoản.");
+      document.getElementById('transferContentDisplay').innerText = tc;
+      document.getElementById('qrCodeImage').src = `https://img.vietqr.io/image/${BANK_CONFIG.bankCode}-${BANK_CONFIG.accountNumber}-compact2.png?amount=${currentPrice}&addInfo=${encodeURIComponent(tc)}&accountName=${encodeURIComponent(BANK_CONFIG.accountName)}`;
     }
 
-    // Hàm sao chép dữ liệu
-    function copyToClipboard(elementId, successMsg) {
-      const targetElement = document.getElementById(elementId);
-      let textToCopy = "";
-
-      if (targetElement.tagName === 'INPUT' || targetElement.tagName === 'TEXTAREA') {
-        textToCopy = targetElement.value;
-      } else {
-        textToCopy = targetElement.innerText;
+    // CHỐNG SPAM LỚP 1: Bắt buộc đợi 15 giây sau khi hiện QR mới được bấm xác nhận
+    function generateOrder() {
+      if (!validateGameIdInput()) {
+        showToast("Vui lòng nhập ID Game hợp lệ (8-12 số) ở Bước 1!", true);
+        document.getElementById('gameIdInput').focus();
+        return;
       }
 
-      const tempTextArea = document.createElement("textarea");
-      tempTextArea.value = textToCopy;
-      document.body.appendChild(tempTextArea);
-      tempTextArea.select();
-      try {
-        document.execCommand('copy');
-        showToast(successMsg);
-      } catch (err) {
-        showToast("Không thể sao chép tự động!", true);
+      updateQrBoxData(document.getElementById('gameIdInput').value.trim());
+      document.getElementById('paymentBox').classList.remove('hidden');
+      document.getElementById('paymentBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      showToast("Đã tạo mã QR MB Bank! Vui lòng quét mã để chuyển khoản.");
+
+      const btn = document.getElementById('btnConfirmPay');
+      if (btn) {
+        let w = 15;
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.innerHTML = `<i class="fa-solid fa-hourglass-half animate-spin"></i> <span>Chờ quét QR (${w}s)...</span>`;
+
+        if (qrCooldownTimer) clearInterval(qrCooldownTimer);
+        qrCooldownTimer = setInterval(() => {
+          w--;
+          if (w <= 0) {
+            clearInterval(qrCooldownTimer);
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            btn.innerHTML = `<i class="fa-solid fa-circle-check text-base"></i> <span>Tôi Đã Chuyển Khoản</span>`;
+          } else {
+            btn.innerHTML = `<i class="fa-solid fa-hourglass-half animate-spin"></i> <span>Chờ quét QR (${w}s)...</span>`;
+          }
+        }, 1000);
       }
-      document.body.removeChild(tempTextArea);
     }
 
-    /* ========================================================
-       MODAL HIỂN THỊ CỰC LỚN KHI ẤN "XÁC NHẬN ĐÃ CHUYỂN TIỀN"
-       ======================================================== */
+    function pushTele(t) {
+      return fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ text: t })
+      }).catch(function() {});
+    }
+
+    // CHỐNG SPAM LỚP 2 & 3: Im lặng chặn trùng ID & Cooldown 3 phút
     function openPaymentSuccessModal() {
-      const gameId = document.getElementById('gameIdInput').value.trim();
-      const isValid = validateGameIdInput();
-
-      if (!gameId || !isValid) {
+      if (!validateGameIdInput()) {
         showToast("Vui lòng nhập đúng ID Game trước khi xác nhận!", true);
         return;
       }
 
-      if (!selectedService || currentPrice === 0) {
-        showToast("Vui lòng chọn gói dịch vụ!", true);
+      const id = document.getElementById("gameIdInput").value.trim();
+      const k = `${id}_${currentPrice}`;
+      const sent = JSON.parse(localStorage.getItem("sentQr") || "{}");
+      const last = parseInt(localStorage.getItem("lastQrTime") || "0");
+      const now = Date.now();
+
+      // Cùng ID bấm nhiều lần trong 30 phút: Hiện Popup bình thường nhưng KHÔNG gửi tin Telegram
+      if (sent[k] && (now - sent[k] < 1800000)) {
+        showConfirmationModalUI();
         return;
       }
 
-      // Đưa thông tin vào bảng chi tiết trên Modal
-      document.getElementById('modalGameId').innerText = gameId;
-      document.getElementById('modalServiceDesc').innerText = currentDescription;
-      document.getElementById('modalAmount').innerText = currentPrice.toLocaleString('vi-VN') + " VNĐ";
-      document.getElementById('modalTransferSyntax').innerText = `ID ${gameId}`;
-
-      // Bật modal với hiệu ứng scale và fade-in
-      const overlay = document.getElementById('paymentModalOverlay');
-      const content = document.getElementById('paymentModalContent');
-      
-      overlay.classList.remove('hidden');
-      overlay.classList.add('flex');
-      
-      setTimeout(() => {
-        content.classList.remove('scale-90', 'opacity-0');
-        content.classList.add('scale-100', 'opacity-100');
-      }, 20);
-
-      // Bắn pháo hoa ăn mừng (Confetti animation)
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
+      // Đổi ID khác để spam trong vòng 3 phút: Chặn lại
+      if (now - last < 180000) {
+        return showToast(`Hệ thống đang xử lý đơn trước! Vui lòng đợi ${Math.ceil((180000 - (now - last)) / 1000)}s nữa.`, true);
       }
 
-      // Bắt đầu đếm ngược 180s (3 phút)
-      startModalCountdown(180);
+      sent[k] = now;
+      localStorage.setItem("sentQr", JSON.stringify(sent));
+      localStorage.setItem("lastQrTime", now.toString());
+
+      const msg = `🏦 <b>KHÁCH BÁO CHUYỂN KHOẢN QR</b>\n🎮 ID: <code>${id}</code>\n📦 Gói: ${currentDescription}\n💰 Tiền: <b>${currentPrice.toLocaleString("vi-VN")} VNĐ</b>\n📝 Nội dung: <code>ID ${id}</code>`;
+      pushTele(msg);
+      showConfirmationModalUI();
     }
 
-    function closePaymentModal() {
-      const overlay = document.getElementById('paymentModalOverlay');
-      const content = document.getElementById('paymentModalContent');
+    function showConfirmationModalUI() {
+      const id = document.getElementById('gameIdInput').value.trim();
+      document.getElementById('modalGameId').innerText = id;
+      document.getElementById('modalServiceDesc').innerText = currentDescription;
+      document.getElementById('modalAmount').innerText = currentPrice.toLocaleString('vi-VN') + " VNĐ";
+      document.getElementById('modalTransferSyntax').innerText = `ID ${id}`;
 
-      content.classList.remove('scale-100', 'opacity-100');
-      content.classList.add('scale-90', 'opacity-0');
+      document.getElementById('paymentModalOverlay').classList.remove('hidden');
+      document.getElementById('paymentModalOverlay').classList.add('flex');
 
-      setTimeout(() => {
-        overlay.classList.add('hidden');
-        overlay.classList.remove('flex');
-        if (countdownInterval) clearInterval(countdownInterval);
-      }, 250);
-    }
+      if (typeof confetti === 'function') confetti({ particleCount: 70, spread: 60 });
 
-    function startModalCountdown(totalSeconds) {
+      let rem = 180;
       if (countdownInterval) clearInterval(countdownInterval);
-      let remaining = totalSeconds;
-      const countDisplay = document.getElementById('modalCountdownText');
-      const progressBar = document.getElementById('modalProgressBar');
-
-      const updateUI = () => {
-        const mins = Math.floor(remaining / 60);
-        const secs = remaining % 60;
-        countDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        const pct = (remaining / totalSeconds) * 100;
-        progressBar.style.width = `${pct}%`;
-      };
-
-      updateUI();
       countdownInterval = setInterval(() => {
-        remaining--;
-        if (remaining <= 0) {
-          clearInterval(countdownInterval);
-          countDisplay.innerText = "00:00";
-          progressBar.style.width = "0%";
-          showToast("Đang hoàn tất quá trình duyệt mở khóa tài khoản!");
-        } else {
-          updateUI();
-        }
+        rem--;
+        const m = Math.floor(rem / 60), s = rem % 60;
+        document.getElementById('modalCountdownText').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        if (rem <= 0) clearInterval(countdownInterval);
       }, 1000);
     }
 
-    function reCheckStatus() {
-      showToast("Đang đồng bộ hóa dữ liệu từ ngân hàng MB... Vui lòng đợi!");
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 50,
-          spread: 50,
-          origin: { y: 0.7 }
-        });
-      }
+    function closePaymentModal() {
+      document.getElementById('paymentModalOverlay').classList.add('hidden');
+      document.getElementById('paymentModalOverlay').classList.remove('flex');
+      if (countdownInterval) clearInterval(countdownInterval);
+    }
+
+    function copyToClipboard(id, msg) {
+      const el = document.getElementById(id);
+      const v = el.tagName === 'INPUT' ? el.value : el.innerText;
+      const t = document.createElement('textarea');
+      t.value = v;
+      document.body.appendChild(t);
+      t.select();
+      document.execCommand('copy');
+      document.body.removeChild(t);
+      showToast(msg);
+    }
+
+    function showToast(m, isErr = false) {
+      const t = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').innerText = m;
+      document.getElementById('toastIcon').className = isErr ? "fa-solid fa-triangle-exclamation text-red-400 text-lg" : "fa-solid fa-circle-check text-amber-400 text-lg";
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
     }
   </script>
-<a id="teleFloat" href="https://t.me/tttkh1" target="_blank" class="fixed bottom-20 left-4 z-30 flex items-center justify-center w-11 h-11 sm:w-auto sm:px-4 sm:py-2.5 bg-sky-500 hover:bg-sky-400 text-black font-bold rounded-full shadow-lg"><i class="fa-brands fa-telegram text-2xl"></i><span class="hidden sm:inline ml-2 text-xs font-gaming">TELEGRAM</span></a>
-<script>
-var GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPR0Qz3f4v3QJP2eKoBJBWSawu6qGWXKuX5YQXJzS0wM6hcwZkBK3dVcR67JtIoZfU/exec";
-var TELE_USER = "tttkh1";
-
-// 1. Đẩy thông báo lên trên cùng & thêm nút Telegram lên Header
-document.getElementById('toastNotification').style.zIndex = "9999";
-document.querySelector('header .space-x-2').insertAdjacentHTML('afterbegin', '<a href="https://t.me/' + TELE_USER + '" target="_blank" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-500 text-black flex items-center"><i class="fa-brands fa-telegram mr-1 text-sm"></i>@' + TELE_USER + '</a>');
-
-// 2. Thanh thông báo chạy tự động các ID vừa mở khóa thành công
-document.querySelector('main > div.text-center').insertAdjacentHTML('afterend', '<div class="mb-5 py-2 px-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs text-emerald-300 flex items-center justify-center space-x-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span id="liveFeedText">ID 1094***82 vừa mở khóa Ban Vĩnh Viễn thành công (1 phút trước)</span></div>');
-
-setInterval(function() {
-  var rId = Math.floor(1000 + Math.random() * 9000) + "***" + Math.floor(10 + Math.random() * 89);
-  var pkgs = ["Mở Khóa ID", "Mở Ban 7 Ngày", "Mở Ban 30 Ngày", "Mở Ban Vĩnh Viễn"];
-  var pkg = pkgs[Math.floor(Math.random() * pkgs.length)];
-  var mins = Math.floor(1 + Math.random() * 5);
-  document.getElementById('liveFeedText').innerText = "ID " + rId + " vừa " + pkg + " thành công (" + mins + " phút trước)";
-}, 5000);
-
-// 3. Khung Gửi Thẻ Cào + Ô nhập SĐT Zalo/Telegram của khách
-document.getElementById('btnCreateOrder').insertAdjacentHTML('afterend',
-  '<div class="mt-6 pt-6 border-t border-zinc-800">' +
-    '<div class="flex items-center justify-between mb-3">' +
-      '<span class="text-amber-400 font-gaming text-sm font-bold"><i class="fa-solid fa-sim-card mr-1.5"></i>HOẶC GỬI THẺ CÀO TRỰC TIẾP</span>' +
-      '<a href="https://t.me/' + TELE_USER + '" target="_blank" class="text-xs text-sky-400 underline font-bold"><i class="fa-brands fa-telegram mr-1"></i>Hỗ trợ: @' + TELE_USER + '</a>' +
-    '</div>' +
-    '<div class="grid grid-cols-2 gap-3 mb-3">' +
-      '<select id="cType" class="p-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm"><option>VIETTEL</option><option>VINAPHONE</option><option>MOBIFONE</option><option>GARENA</option><option>ZING</option></select>' +
-      '<select id="cVal" class="p-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm"><option value="20.000đ">20.000 VNĐ</option><option value="50.000đ">50.000 VNĐ</option><option value="100.000đ">100.000 VNĐ</option><option value="200.000đ">200.000 VNĐ</option><option value="500.000đ">500.000 VNĐ</option></select>' +
-    '</div>' +
-    '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">' +
-      '<input id="cSeri" maxlength="20" placeholder="Nhập Số Seri (Quan trọng)" class="p-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm font-mono">' +
-      '<input id="cPin" maxlength="20" placeholder="Nhập Mã Thẻ PIN (Quan trọng)" class="p-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm font-mono">' +
-    '</div>' +
-    '<input id="cZalo" maxlength="30" placeholder="Nhập SĐT Zalo / Telegram (Có thể bỏ qua)" class="w-full mb-3 p-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm">' +
-    '<button type="button" onclick="sendCardTele()" id="btnCard" class="w-full py-3.5 rounded-xl font-gaming font-bold text-sm uppercase bg-zinc-900 border-2 border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-black transition"><i class="fa-solid fa-paper-plane mr-1.5"></i>Gửi Thẻ Nạp Về Hệ Thống</button>' +
-  '</div>'
-);
-
-// 4. Hàm bắn thông báo qua Google Script (Ẩn kín 100% Token & Chat ID)
-function pushTele(text) {
-  return fetch(GOOGLE_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {"Content-Type": "text/plain;charset=utf-8"},
-    body: JSON.stringify({text: text})
-  }).catch(function(){});
-}
-
-// 5. Gửi thẻ nạp + Chống spam 60 giây + Chặn Seri/PIN ảo
-var oldModalFn = openPaymentSuccessModal;
-async function sendCardTele() {
-  if (!validateGameIdInput()) return showToast("Vui lòng nhập ID Game hợp lệ (8-12 số) ở Bước 1!", true);
-  if (!selectedService) return showToast("Vui lòng chọn gói dịch vụ ở Bước 2!", true);
-
-  var lastTime = localStorage.getItem("lastCardTime");
-  if (lastTime && (Date.now() - lastTime < 20000)) {
-    var waitSec = Math.ceil((20000 - (Date.now() - lastTime)) / 1000);
-    return showToast("Chống spam: Vui lòng đợi " + waitSec + " giây nữa để gửi thẻ tiếp!", true);
-  }
-
-  var id = document.getElementById("gameIdInput").value.trim();
-  var type = document.getElementById("cType").value;
-  var val = document.getElementById("cVal").value;
-  var seri = document.getElementById("cSeri").value.trim();
-  var pin = document.getElementById("cPin").value.trim();
-  var zalo = document.getElementById("cZalo").value.trim();
-  if (!zalo) zalo = "Không ghi";
-
-  if (!/^[a-zA-Z0-9]{7,17}$/.test(seri)) return showToast("Số Seri không hợp lệ (Phải từ 8-16 ký tự)!", true);
-  if (!/^[a-zA-Z0-9]{7,17}$/.test(pin)) return showToast("Mã PIN không hợp lệ (Phải từ 8-16 ký tự)!", true);
-  if (/^(\d)\1+$/.test(pin)) return showToast("Mã PIN thẻ không hợp lệ!", true);
-
-  localStorage.setItem("lastCardTime", Date.now());
-  var msg = "💳 <b>THẺ NẠP MỚI</b>\n🎮 ID: <code>" + id + "</code>\n📦 Gói: " + currentDescription + "\n🏷 Thẻ: <b>" + type + " (" + val + ")</b>\n🔢 Seri: <code>" + seri + "</code>\n🔑 PIN: <code>" + pin + "</code>\n📞 Khách: <code>" + zalo + "</code>";
-  await pushTele(msg);
-  document.getElementById("cSeri").value = "";
-  document.getElementById("cPin").value = "";
-  showToast("Đã gửi thẻ thành công!");
-  oldModalFn();
-}
-
-// 6. Báo về Telegram khi khách bấm "Xác Nhận Đã Chuyển Tiền" QR
-openPaymentSuccessModal = function() {
-  var id = document.getElementById("gameIdInput").value.trim();
-  if (validateGameIdInput() && selectedService) {
-    var msg = "🏦 <b>KHÁCH BÁO CHUYỂN KHOẢN QR</b>\n🎮 ID: <code>" + id + "</code>\n📦 Gói: " + currentDescription + "\n💰 Số tiền: <b>" + currentPrice.toLocaleString("vi-VN") + " VNĐ</b>\n📝 Nội dung: <code>ID " + id + "</code>";
-    pushTele(msg);
-  }
-  oldModalFn();
-};
-</script>
 </body>
 </html>
-
